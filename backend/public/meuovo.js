@@ -1,0 +1,1 @@
+const ovo = "meu ovo";
