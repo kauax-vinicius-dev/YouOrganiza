@@ -17,6 +17,7 @@ import { FormDialogFooter } from "@/components/form-dialog-footer";
 import { DataCard } from "@/components/data-card";
 import type { HardwareItem } from "@/lib/types";
 import { AccessDenied } from "@/components/access-denied";
+import { messages } from "@/lib/messages";
 
 export default function EstoquePage() {
   const { user } = useAuth();
@@ -40,8 +41,6 @@ export default function EstoquePage() {
   const [creating, setCreating] = useState(false);
   const [itemName, setItemName] = useState("");
   const [amountItem, setAmountItem] = useState("");
-
-  // Entrada de estoque
   const [selectedItem, setSelectedItem] = useState("");
   const [addQuantity, setAddQuantity] = useState("");
   const [addingStock, setAddingStock] = useState(false);
@@ -53,7 +52,7 @@ export default function EstoquePage() {
         Array.isArray(res.data) ? res.data : res.data.hardwareItems || [],
       );
     } catch {
-      toast.error("Erro ao carregar produtos.");
+      toast.error(messages.fetchError);
     } finally {
       setLoading(false);
     }
@@ -71,13 +70,13 @@ export default function EstoquePage() {
         itemName,
         amountItem: Number(amountItem),
       });
-      toast.success("Produto adicionado!");
+      toast.success(messages.createItemSuccess);
       setItemName("");
       setAmountItem("");
       setDialogOpen(false);
       fetchItems();
     } catch {
-      toast.error("Erro ao adicionar produto.");
+      toast.error(messages.createItemError);
     } finally {
       setCreating(false);
     }
@@ -92,11 +91,11 @@ export default function EstoquePage() {
         itemName: editForm.itemName,
         amountItem: editForm.amountItem,
       });
-      toast.success("Produto editado com sucesso!");
+      toast.success(messages.editItemSuccess);
       setEditDialogOpen(false);
       fetchItems();
     } catch {
-      toast.error("Erro ao editar produto.");
+      toast.error(messages.editItemError);
     } finally {
       setEditing(false);
     }
@@ -105,17 +104,17 @@ export default function EstoquePage() {
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/hardware-items/${id}`);
-      toast.success("Produto removido.");
+      toast.success(messages.deleteItemSuccess);
       fetchItems();
     } catch {
-      toast.error("Erro ao remover produto.");
+      toast.error(messages.deleteItemError);
     }
   };
 
   const handleAddStock = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!selectedItem) {
-      toast.error("Selecione um item.");
+      toast.error(messages.selectItemError);
       return;
     }
     setAddingStock(true);
@@ -124,12 +123,12 @@ export default function EstoquePage() {
         removedItemsQuantity: -Number(addQuantity),
         technicianName: "Reposição de estoque",
       });
-      toast.success("Estoque atualizado!");
+      toast.success(messages.restockSuccess);
       setSelectedItem("");
       setAddQuantity("");
       fetchItems();
     } catch {
-      toast.error("Erro ao repor estoque.");
+      toast.error(messages.restockError);
     } finally {
       setAddingStock(false);
     }
@@ -171,7 +170,7 @@ export default function EstoquePage() {
             }
             loading={loading}
             isEmpty={filtered.length === 0}
-            emptyMessage="Nenhum produto cadastrado."
+            emptyMessage={messages.noStock}
             actions={
               isAdmin ? (
                 <RegisterDialogButton
@@ -235,7 +234,7 @@ export default function EstoquePage() {
                       : undefined
                   }
                 >
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-muted-foreground mt-1 text-sm">
                     Quantidade: {item.amountItem}
                   </p>
                 </DataCard>

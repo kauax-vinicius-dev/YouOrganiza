@@ -11,6 +11,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import type { Withdrawal } from "@/lib/types";
+import { EmptyState } from "@/components/empty-state";
+import { messages } from "@/lib/messages";
 
 interface WithdrawalTableProps {
   withdrawals: Withdrawal[];
@@ -33,26 +35,30 @@ export function WithdrawalTable({
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  if (withdrawals.length === 0) {
+    return <EmptyState message={messages.noWithdrawal} />;
+  }
+
   if (isMobile) {
     return (
       <div className="flex flex-col gap-3">
         {withdrawals.map((w) => (
           <div
             key={w._id}
-            className="rounded-lg border bg-card p-4 shadow-sm flex flex-col gap-2"
+            className="bg-card flex flex-col gap-2 rounded-lg border p-4 shadow-sm"
           >
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-primary">
+            <div className="flex items-center justify-between">
+              <span className="text-primary font-semibold">
                 {w.technicianName}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground text-xs">
                 {formatDate(w.date)}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Badge>{w.withdrawnItem}</Badge>
               <span className="text-sm">Quantidade:</span>
-              <Badge className="font-mono text-xs bg-green-500/10 text-green-500">
+              <Badge className="bg-green-500/10 font-mono text-xs text-green-500">
                 {w.quantityTaken}
               </Badge>
             </div>

@@ -53,18 +53,18 @@ export function DataCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
-              className="flex h-10 w-10 items-center justify-center rounded-lg shrink-0"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
               style={{ backgroundColor: iconBgColor }}
             >
               <Icon className="h-5 w-5" style={{ color: iconColor }} />
             </div>
             <div className="min-w-0">
-              <p className="font-medium text-sm text-foreground">{title}</p>
+              <p className="text-foreground text-sm font-medium">{title}</p>
               {children}
             </div>
           </div>
           {onDelete && (
-            <div className="flex flex-col items-center justify-center h-full gap-1">
+            <div className="flex h-full flex-col items-center justify-center gap-1">
               {EditIconButtonProps && (
                 <EditIconButton {...EditIconButtonProps} />
               )}
@@ -78,7 +78,7 @@ export function DataCard({
           <DialogHeader>
             <DialogTitle>Excluir {deleteLabel}</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-muted-foreground mb-4 text-sm">
             Tem certeza que deseja excluir este {deleteLabel}? Essa ação não
             pode ser desfeita.
           </p>

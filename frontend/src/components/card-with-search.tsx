@@ -43,8 +43,8 @@ export function CardWithSearch({
           <CardTitle className="text-base">{title}</CardTitle>
           {description && <CardDescription>{description}</CardDescription>}
         </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="flex items-center w-full sm:w-64">
+        <div className="flex w-full items-center gap-2 sm:w-auto">
+          <div className="flex w-full items-center sm:w-64">
             {searchComponent ? (
               searchComponent
             ) : (

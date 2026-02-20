@@ -14,13 +14,13 @@ export default function AssinarPage() {
 
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mb-4">
-            <FileSignature className="h-7 w-7 text-primary" />
+          <div className="bg-primary/10 mb-4 flex h-14 w-14 items-center justify-center rounded-full">
+            <FileSignature className="text-primary h-7 w-7" />
           </div>
-          <h3 className="text-lg font-medium text-foreground mb-1">Em breve</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <h3 className="text-foreground mb-1 text-lg font-medium">Em breve</h3>
+          <p className="text-muted-foreground max-w-sm text-sm">
             A funcionalidade de assinatura de documentos esta sendo desenvolvida
-            e estara disponivel em breve.
+            e estará disponivel em breve.
           </p>
         </CardContent>
       </Card>

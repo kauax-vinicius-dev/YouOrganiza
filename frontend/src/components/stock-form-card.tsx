@@ -35,7 +35,7 @@ interface StockFormCardProps {
   inputClassName?: string;
   submitLabel: string;
   submitLoading: boolean;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.SyntheticEvent) => void;
   children?: ReactNode;
 }
 
@@ -61,7 +61,7 @@ export function StockFormCard({
   children,
 }: StockFormCardProps) {
   return (
-    <Card className="max-w-md w-full">
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -97,7 +97,7 @@ export function StockFormCard({
               value={inputValue}
               onChange={onInputChange}
               required
-              className={`mb-2 bg-border/10 ${inputClassName}`}
+              className={`bg-border/10 mb-2 ${inputClassName}`}
             />
           </div>
           <SubmitButton loading={submitLoading} label={submitLabel} fullWidth />

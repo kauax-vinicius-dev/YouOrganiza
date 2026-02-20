@@ -14,7 +14,7 @@ export function EditIconButton({ onClick, className }: EditIconButtonProps) {
       size="icon"
       onClick={onClick}
       className={cn(
-        "text-blue-500 hover:bg-blue-500/10 hover:text-blue-500 shrink-0",
+        "shrink-0 text-blue-500 hover:bg-blue-500/10 hover:text-blue-500",
         className,
       )}
     >

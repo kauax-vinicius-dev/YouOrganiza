@@ -25,6 +25,7 @@ import { FormDialogFooter } from "@/components/form-dialog-footer";
 import { TechnicianField } from "@/components/technician-field";
 import { formatDate } from "@/lib/utils";
 import type { MachineExchange } from "@/lib/types";
+import { messages } from "@/lib/messages";
 
 export default function TrocasPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -56,7 +57,7 @@ export default function TrocasPage() {
       const res = await api.get("/machine-exchanges");
       setExchanges(res.data);
     } catch {
-      toast.error("Erro ao carregar trocas.");
+      toast.error(messages.fetchExchangesError || messages.fetchError);
     } finally {
       setLoading(false);
     }
@@ -74,7 +75,7 @@ export default function TrocasPage() {
         ...form,
         technicianName: isAdmin ? form.technicianName : user?.name || "",
       });
-      toast.success("Troca registrada com sucesso!");
+      toast.success(messages.createExchangeSuccess);
       setForm({
         replacedMachineSerialNumber: "",
         replacedMachinecurrentOperation: "",
@@ -86,7 +87,7 @@ export default function TrocasPage() {
       setDialogOpen(false);
       fetchExchanges();
     } catch {
-      toast.error("Erro ao registrar troca.");
+      toast.error(messages.createExchangeError);
     } finally {
       setCreating(false);
     }
@@ -136,7 +137,7 @@ export default function TrocasPage() {
         }
         loading={loading}
         isEmpty={filtered.length === 0}
-        emptyMessage="Nenhuma troca registrada."
+        emptyMessage={messages.noExchange}
         actions={
           <RegisterDialogButton
             open={dialogOpen}
@@ -162,7 +163,7 @@ export default function TrocasPage() {
               />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-3">
-                  <p className="text-sm font-medium text-destructive/80">
+                  <p className="text-destructive/80 text-sm font-medium">
                     Máquina Substituída
                   </p>
                   <div className="space-y-2">
@@ -252,23 +253,23 @@ export default function TrocasPage() {
             {sorted.map((ex) => (
               <div
                 key={ex._id}
-                className="rounded-lg border bg-card p-4 shadow-sm flex flex-col gap-2"
+                className="bg-card flex flex-col gap-2 rounded-lg border p-4 shadow-sm"
               >
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-primary">
+                <div className="flex items-center justify-between">
+                  <span className="text-primary font-semibold">
                     {ex.technicianName}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     {formatDate(ex.date)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs">Troca:</span>
-                  <Badge className="font-mono text-xs bg-blue-500/10 text-blue-500">
+                  <Badge className="bg-blue-500/10 font-mono text-xs text-blue-500">
                     {ex.replacedMachineSerialNumber}
                   </Badge>
-                  <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
-                  <Badge className="font-mono text-xs bg-green-500/10 text-green-500">
+                  <ArrowRight className="text-muted-foreground h-3 w-3 shrink-0" />
+                  <Badge className="bg-green-500/10 font-mono text-xs text-green-500">
                     {ex.newMachineSerialNumber}
                   </Badge>
                 </div>
@@ -351,11 +352,11 @@ export default function TrocasPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1.5">
-                        <Badge className="font-mono text-xs bg-blue-500/10 text-blue-500">
+                        <Badge className="bg-blue-500/10 font-mono text-xs text-blue-500">
                           {ex.replacedMachineSerialNumber}
                         </Badge>
-                        <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
-                        <Badge className="font-mono text-xs bg-green-500/10 text-green-500">
+                        <ArrowRight className="text-muted-foreground h-3 w-3 shrink-0" />
+                        <Badge className="bg-green-500/10 font-mono text-xs text-green-500">
                           {ex.newMachineSerialNumber}
                         </Badge>
                       </div>

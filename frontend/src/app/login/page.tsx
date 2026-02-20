@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Loader2, Eye, EyeOff, Sun, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "@/contexts/theme-context";
+import { messages } from "@/lib/messages";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,17 +31,16 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      toast.success("Login realizado com sucesso!");
+      toast.success(messages.loginSuccess);
     } catch {
-      toast.error("Email ou senha incorretos.");
+      toast.error(messages.loginError);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-background flex items-center justify-end overflow-hidden">
-      {/* Switch de tema no canto superior direito */}
+    <div className="bg-background relative flex min-h-screen w-full items-center justify-end overflow-hidden">
       <div className="absolute top-6 right-6 z-30">
         <div className="flex items-center gap-2 px-2 py-1">
           <Sun
@@ -56,26 +56,24 @@ export default function LoginPage() {
           />
         </div>
       </div>
-      {/* Logo absoluta à esquerda */}
-      <div className="hidden md:block absolute left-0 top-0 h-full w-1/2 z-10 p-7">
-        <div className="flex items-center justify-center h-full">
-          <div className="bg-secondary rounded-2xl shadow-2xl flex items-center justify-center h-full w-full">
+      <div className="absolute top-0 left-0 z-10 hidden h-full w-1/2 p-7 md:block">
+        <div className="flex h-full items-center justify-center">
+          <div className="bg-secondary flex h-full w-full items-center justify-center rounded-2xl shadow-2xl">
             <Image
               src="/logo.png"
               alt="Logo da empresa"
               width={400}
               height={400}
-              className="max-w-lg w-auto h-auto object-contain"
+              className="h-auto w-auto max-w-lg object-contain"
               priority
             />
           </div>
         </div>
       </div>
-      {/* Formulário à direita */}
-      <div className="relative z-20 flex w-full md:w-1/2 min-h-screen items-center justify-center px-8 py-16">
-        <Card className="w-full max-w-lg border-0 bg-transparent shadow-none p-6">
+      <div className="relative z-20 flex min-h-screen w-full items-center justify-center px-8 py-16 md:w-1/2">
+        <Card className="w-full max-w-lg border-0 bg-transparent p-6 shadow-none">
           <CardHeader className="text-center">
-            <CardDescription className="text-primary text-xl tracking-wide font-bold">
+            <CardDescription className="text-primary text-xl font-bold tracking-wide">
               Entre seu email e senha para acessar o sistema de gerenciamento
             </CardDescription>
           </CardHeader>
@@ -96,7 +94,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="username"
-                  className={`bg-white/10 placeholder:text-slate-400 py-7 text-lg px-4 focus:ring-2 focus:ring-primary/40 transition-all ${theme === "light" ? "border border-primary/50" : "border-none"}`}
+                  className={`focus:ring-primary/40 bg-white/10 px-4 py-7 text-lg transition-all placeholder:text-slate-400 focus:ring-2 ${theme === "light" ? "border-primary/50 border" : "border-none"}`}
                 />
               </div>
               <div className="space-y-2">
@@ -115,14 +113,14 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     autoComplete="current-password"
-                    className={`bg-white/10 placeholder:text-slate-400 py-7 text-lg px-4 mb-2 pr-12 focus:ring-2 focus:ring-primary/40 transition-all ${theme === "light" ? "border border-primary/50" : "border-none"}`}
+                    className={`focus:ring-primary/40 mb-2 bg-white/10 px-4 py-7 pr-12 text-lg transition-all placeholder:text-slate-400 focus:ring-2 ${theme === "light" ? "border-primary/50 border" : "border-none"}`}
                   />
                   {password.length > 0 && (
                     <button
                       type="button"
                       tabIndex={-1}
                       onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-4 top-4 text-slate-400 cursor-pointer hover:text-slate-200 focus:outline-none"
+                      className="absolute top-4 right-4 cursor-pointer text-slate-400 hover:text-slate-200 focus:outline-none"
                       aria-label={
                         showPassword ? "Ocultar senha" : "Mostrar senha"
                       }
@@ -134,7 +132,7 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-primary text-foreground font-semibold rounded-lg py-7 text-lg text-center"
+                className="bg-primary text-foreground w-full rounded-lg py-7 text-center text-lg font-semibold"
                 disabled={loading}
               >
                 {loading ? (

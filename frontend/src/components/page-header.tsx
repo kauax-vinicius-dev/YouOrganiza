@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NotificationBell } from "@/components/notification-bell";
@@ -46,7 +46,6 @@ export function PageHeader({ title, description, children }: PageHeaderProps) {
       isLast: i === arr.length - 1,
     }));
 
-  // On /dashboard itself, add the title as a second breadcrumb
   if (segments.length === 1 && segments[0] === "dashboard") {
     breadcrumbs[0] = { ...breadcrumbs[0], isLast: false };
     breadcrumbs.push({ label: title, href: pathname, isLast: true });
@@ -74,13 +73,12 @@ export function PageHeader({ title, description, children }: PageHeaderProps) {
       </Breadcrumb>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          {/* <MobileMenuSheet /> */}
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            <h1 className="text-foreground text-3xl font-bold tracking-tight">
               {title}
             </h1>
             {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
+              <p className="text-muted-foreground text-sm">{description}</p>
             )}
           </div>
         </div>

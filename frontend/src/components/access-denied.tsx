@@ -1,5 +1,3 @@
-import React from "react";
-
 export function AccessDenied({
   message = "Apenas administradores podem acessar esta página.",
 }) {

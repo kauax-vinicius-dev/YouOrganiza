@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 interface TechnicianFieldProps {
   isAdmin: boolean;
@@ -29,8 +30,10 @@ export function TechnicianField({
   placeholder = "Nome completo do colaborador",
 }: TechnicianFieldProps) {
   const [users, setUsers] = useState<{ _id: string; name: string }[]>([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (isAdmin) {
+      setLoading(true);
       api
         .get("/users")
         .then((res) => {
@@ -39,7 +42,8 @@ export function TechnicianField({
           else if (Array.isArray(data.users)) setUsers(data.users);
           else setUsers([]);
         })
-        .catch(() => setUsers([]));
+        .catch(() => setUsers([]))
+        .finally(() => setLoading(false));
     }
   }, [isAdmin]);
 
@@ -47,18 +51,22 @@ export function TechnicianField({
     return (
       <div className="space-y-2">
         <Label htmlFor={id}>{label}</Label>
-        <Select value={value} onValueChange={onChange}>
-          <SelectTrigger className="bg-border/10 cursor-pointer">
-            <SelectValue placeholder={placeholder} />
-          </SelectTrigger>
-          <SelectContent className="bg-card">
-            {users.map((u) => (
-              <SelectItem key={u._id} value={u.name}>
-                {u.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {loading ? (
+          <LoadingSpinner size="sm" className="py-2" />
+        ) : (
+          <Select value={value} onValueChange={onChange}>
+            <SelectTrigger className="bg-border/10 cursor-pointer">
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent className="bg-card">
+              {users.map((u) => (
+                <SelectItem key={u._id} value={u.name}>
+                  {u.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
     );
   }
@@ -66,7 +74,7 @@ export function TechnicianField({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <p className="text-sm text-foreground bg-border/10 border rounded-md px-3 py-2 inline-block w-auto min-w-0 max-w-max">
+      <p className="text-foreground bg-border/10 inline-block w-auto max-w-max min-w-0 rounded-md border px-3 py-2 text-sm">
         {userName}
       </p>
     </div>

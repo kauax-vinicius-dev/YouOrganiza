@@ -16,6 +16,8 @@ import { SearchInput } from "@/components/search-input";
 import { FormDialogFooter } from "@/components/form-dialog-footer";
 import { DataCard } from "@/components/data-card";
 import type { Machine } from "@/lib/types";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { messages } from "@/lib/messages";
 
 export default function MaquinasPage() {
   const { user } = useAuth();
@@ -47,7 +49,7 @@ export default function MaquinasPage() {
       const res = await api.get("/machines");
       setMachines(res.data);
     } catch {
-      toast.error("Erro ao carregar máquinas.");
+      toast.error(messages.fetchMachinesError);
     } finally {
       setLoading(false);
     }
@@ -57,12 +59,16 @@ export default function MaquinasPage() {
     fetchMachines();
   }, []);
 
+  if (loading) {
+    return <LoadingSpinner size="lg" className="h-64 items-center" />;
+  }
+
   const handleCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setCreating(true);
     try {
       await api.post("/machines", form);
-      toast.success("Máquina registrada com sucesso!");
+      toast.success(messages.createMachineSuccess);
       setForm({
         serialNumber: "",
         model: "",
@@ -72,7 +78,7 @@ export default function MaquinasPage() {
       setDialogOpen(false);
       fetchMachines();
     } catch {
-      toast.error("Erro ao registrar máquina.");
+      toast.error(messages.createMachineError);
     } finally {
       setCreating(false);
     }
@@ -89,11 +95,11 @@ export default function MaquinasPage() {
         currentOperation: editForm.currentOperation,
         observation: editForm.observation,
       });
-      toast.success("Máquina editada com sucesso!");
+      toast.success(messages.editMachineSuccess);
       setEditDialogOpen(false);
       fetchMachines();
     } catch {
-      toast.error("Erro ao editar máquina.");
+      toast.error(messages.editMachineError);
     } finally {
       setEditing(false);
     }
@@ -102,10 +108,10 @@ export default function MaquinasPage() {
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/admin/machines/${id}`);
-      toast.success("Máquina removida.");
+      toast.success(messages.deleteMachineSuccess);
       fetchMachines();
     } catch {
-      toast.error("Erro ao remover máquina.");
+      toast.error(messages.deleteMachineError);
     }
   };
 
@@ -136,7 +142,7 @@ export default function MaquinasPage() {
         }
         loading={loading}
         isEmpty={filtered.length === 0}
-        emptyMessage="Nenhuma máquina registrada."
+        emptyMessage={messages.noMachine}
         actions={
           isAdmin && (
             <RegisterDialogButton
@@ -232,10 +238,10 @@ export default function MaquinasPage() {
                   : undefined
               }
             >
-              <Badge className="font-mono text-xs mt-1 bg-blue-500/10 text-blue-500">
+              <Badge className="mt-1 bg-blue-500/10 font-mono text-xs text-blue-500">
                 {m.serialNumber}
               </Badge>
-              <div className="mt-3 space-y-1 text-sm text-muted-foreground">
+              <div className="text-muted-foreground mt-3 space-y-1 text-sm">
                 <p>Operação: {m.currentOperation || "—"}</p>
                 {m.observation && (
                   <p className="truncate">Obs: {m.observation}</p>

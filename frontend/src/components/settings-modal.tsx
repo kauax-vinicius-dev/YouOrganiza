@@ -55,7 +55,7 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
     children: React.ReactNode;
   }) {
     return (
-      <div className="flex items-center justify-between rounded-lg border border-border bg-border/5 px-4 py-3">
+      <div className="border-border bg-border/5 flex items-center justify-between rounded-lg border px-4 py-3">
         <div className="flex items-center gap-3">
           <div
             className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconBg}`}
@@ -63,7 +63,7 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
             {icon}
           </div>
           <div>
-            <p className="text-sm font-medium text-foreground">{title}</p>
+            <p className="text-foreground text-sm font-medium">{title}</p>
             <p className="text-xs text-slate-500">{description}</p>
           </div>
         </div>
@@ -83,7 +83,7 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
   }) {
     return (
       <div>
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+        <h3 className="text-foreground flex items-center gap-2 text-sm font-semibold">
           {icon}
           {title}
         </h3>
@@ -95,7 +95,6 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
   const [activeSection, setActiveSection] = useState<SectionId>("geral");
   const { theme, toggleTheme } = useTheme();
 
-  // Notification preferences (persistidas no backend)
   const [notifications, setNotifications] = useState({
     estoqueBaixo: true,
     retiradas: true,
@@ -103,7 +102,6 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
     novasMaquinas: true,
   });
 
-  // Busca preferências do backend ao abrir modal (apenas admin)
   useEffect(() => {
     if (!isAdmin) return;
     let ignore = false;
@@ -123,7 +121,6 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
     };
   }, [isAdmin]);
 
-  // Atualiza backend ao trocar preferência (apenas admin)
   const toggleNotification = (key: keyof typeof notifications) => {
     if (!isAdmin) return;
     setNotifications((prev) => {
@@ -141,15 +138,14 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
-        className="max-w-225 w-[90vw] overflow-hidden border-border bg-card p-0 text-foreground sm:rounded-xl"
+        className="border-border bg-card text-foreground w-[90vw] max-w-225 overflow-hidden p-0 sm:rounded-xl"
         showCloseButton={true}
         aria-describedby="settings-modal-description"
       >
         <div className="flex h-145">
-          {/* Sidebar do modal */}
-          <div className="flex w-55 shrink-0 flex-col gap-1 border-r border-border p-4">
+          <div className="border-border flex w-55 shrink-0 flex-col gap-1 border-r p-4">
             <DialogHeader className="pb-2">
-              <DialogTitle className="px-2 text-sm font-bold uppercase tracking-widest text-slate-500">
+              <DialogTitle className="px-2 text-sm font-bold tracking-widest text-slate-500 uppercase">
                 Configurações
               </DialogTitle>
             </DialogHeader>
@@ -164,7 +160,7 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
                     "justify-start gap-2.5 px-3 py-2 text-sm font-medium",
                     isActive
                       ? "bg-primary text-foreground hover:bg-primary/90"
-                      : "text-slate-400 hover:bg-border hover:text-foreground",
+                      : "hover:bg-border hover:text-foreground text-slate-400",
                   )}
                 >
                   <section.icon className="h-4 w-4" />
@@ -174,13 +170,11 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
             })}
           </div>
 
-          {/* Conteúdo */}
           <div className="flex flex-1 flex-col overflow-y-auto p-5">
-            {/* ===== GERAL ===== */}
             {activeSection === "geral" && (
               <div className="flex flex-col gap-5">
                 <SectionHeader
-                  icon={<Palette className="h-4 w-4 text-primary" />}
+                  icon={<Palette className="text-primary h-4 w-4" />}
                   title="Aparência"
                   description="Personalize o visual do sistema."
                 />
@@ -214,11 +208,10 @@ export function SettingsModal({ children }: { children: React.ReactNode }) {
               </div>
             )}
 
-            {/* ===== NOTIFICAÇÕES ===== */}
             {isAdmin && activeSection === "notificacoes" && (
               <div className="flex flex-col gap-5">
                 <SectionHeader
-                  icon={<Bell className="h-4 w-4 text-primary" />}
+                  icon={<Bell className="text-primary h-4 w-4" />}
                   title="Notificações"
                   description="Controle quais alertas você deseja receber."
                 />

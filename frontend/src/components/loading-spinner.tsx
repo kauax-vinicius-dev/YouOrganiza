@@ -19,7 +19,7 @@ export function LoadingSpinner({
   return (
     <div className={cn("flex justify-center py-8", className)}>
       <Loader2
-        className={cn("animate-spin text-muted-foreground", sizeMap[size])}
+        className={cn("text-muted-foreground animate-spin", sizeMap[size])}
       />
     </div>
   );

@@ -16,14 +16,14 @@ export function SearchInput({
   className,
 }: SearchInputProps) {
   return (
-    <div className={cn("flex items-center relative w-full", className)}>
+    <div className={cn("relative flex w-full items-center", className)}>
       <div className="relative w-full">
-        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="text-muted-foreground absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2" />
         <Input
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="pl-8 bg-border/10"
+          className="bg-border/10 pl-8"
         />
       </div>
     </div>

@@ -14,28 +14,54 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Package, ArrowDownToLine, Monitor, AlertTriangle } from "lucide-react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+import dynamic from "next/dynamic";
+
+const ResponsiveContainer = dynamic(
+  () => import("recharts").then((m) => m.ResponsiveContainer),
+  { ssr: false },
+);
+const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), {
+  ssr: false,
+});
+const Bar = dynamic(() => import("recharts").then((m) => m.Bar), {
+  ssr: false,
+});
+const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), {
+  ssr: false,
+});
+const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), {
+  ssr: false,
+});
+const Tooltip = dynamic(() => import("recharts").then((m) => m.Tooltip), {
+  ssr: false,
+});
+const PieChart = dynamic(() => import("recharts").then((m) => m.PieChart), {
+  ssr: false,
+});
+const Pie = dynamic(() => import("recharts").then((m) => m.Pie), {
+  ssr: false,
+});
+const Legend = dynamic(() => import("recharts").then((m) => m.Legend), {
+  ssr: false,
+});
 import api from "@/lib/api";
 import { PageHeader } from "@/components/page-header";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import type { HardwareItem, Withdrawal } from "@/lib/types";
+import { EmptyState } from "@/components/empty-state";
 
 interface Machine {
   _id: string;
 }
 
 const CHART_COLORS = ["#8B5CF6", "#3B82F6", "#34D399", "#FBBF24", "#F472B6"];
+
+function getColor(index: number) {
+  if (index < CHART_COLORS.length) return CHART_COLORS[index];
+  return `#${Math.floor(Math.random() * 16777215)
+    .toString(16)
+    .padStart(6, "0")}`;
+}
 
 export default function DashboardPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -62,7 +88,7 @@ export default function DashboardPage() {
         setWithdrawals(withdrawalsRes.data);
         setMachines(machinesRes.data);
       } catch (error) {
-        console.error("Erro ao buscar dados do dashboard:", error);
+        // silently fail
       } finally {
         setLoading(false);
       }
@@ -129,85 +155,84 @@ export default function DashboardPage() {
         description="Visão geral do estoque e atividades recentes"
       />
 
-      {/* Cards de resumo - estilo referencia dark */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-0 bg-card">
+        <Card className="bg-card border-0">
           <CardHeader className="flex flex-col items-center justify-center">
-            <CardTitle className="text-xs font-medium text-muted-foreground mb-1">
+            <CardTitle className="text-muted-foreground mb-1 text-xs font-medium">
               Produtos em Estoque
             </CardTitle>
             <div className="flex flex-col items-center">
-              <div className="bg-blue-600/20 rounded-full p-3 flex items-center justify-center">
+              <div className="flex items-center justify-center rounded-full bg-blue-600/20 p-3">
                 <Package className="h-9 w-9 text-blue-500" />
               </div>
-              <Badge className="mt-2 text-[10px] px-1.5 py-0.5 bg-blue-500/20 text-muted-foreground">
+              <Badge className="text-muted-foreground mt-2 bg-blue-500/20 px-1.5 py-0.5 text-[10px]">
                 Estoque
               </Badge>
             </div>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center h-full">
-            <div className="text-3xl font-extrabold text-foreground mb-0.5">
+          <CardContent className="flex h-full flex-col items-center justify-center">
+            <div className="text-foreground mb-0.5 text-3xl font-extrabold">
               {items.length}
             </div>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               itens cadastrados
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-card">
+        <Card className="bg-card border-0">
           <CardHeader className="flex flex-col items-center justify-center">
-            <CardTitle className="text-xs font-medium text-muted-foreground mb-1">
+            <CardTitle className="text-muted-foreground mb-1 text-xs font-medium">
               Retiradas Hoje
             </CardTitle>
             <div className="flex flex-col items-center">
-              <div className="bg-green-600/20 rounded-full p-3 flex items-center justify-center">
+              <div className="flex items-center justify-center rounded-full bg-green-600/20 p-3">
                 <ArrowDownToLine className="h-9 w-9 text-green-500" />
               </div>
-              <Badge className="mt-2 text-[10px] px-1.5 py-0.5 bg-green-500/20 text-muted-foreground">
+              <Badge className="text-muted-foreground mt-2 bg-green-500/20 px-1.5 py-0.5 text-[10px]">
                 Retiradas
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            <div className="text-3xl font-extrabold text-foreground mb-0.5">
+            <div className="text-foreground mb-0.5 text-3xl font-extrabold">
               {todayWithdrawals.length}
             </div>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               {withdrawals.length} total registradas
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-card">
+        <Card className="bg-card border-0">
           <CardHeader className="flex flex-col items-center justify-center">
-            <CardTitle className="text-xs font-medium text-muted-foreground mb-1">
+            <CardTitle className="text-muted-foreground mb-1 text-xs font-medium">
               Máquinas Registradas
             </CardTitle>
             <div className="flex flex-col items-center">
-              <div className="bg-primary/20 rounded-full p-3 flex items-center justify-center">
-                <Monitor className="h-9 w-9 text-primary" />
+              <div className="bg-primary/20 flex items-center justify-center rounded-full p-3">
+                <Monitor className="text-primary h-9 w-9" />
               </div>
-              <Badge className="mt-2 text-[10px] px-1.5 py-0.5 bg-primary/20 text-muted-foreground">
+              <Badge className="bg-primary/20 text-muted-foreground mt-2 px-1.5 py-0.5 text-[10px]">
                 Máquinas
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            <div className="text-3xl font-extrabold text-foreground mb-0.5">
+            <div className="text-foreground mb-0.5 text-3xl font-extrabold">
               {machines.length}
             </div>
-            <p className="mt-0.5 text-xs text-muted-foreground">no sistema</p>
+            <p className="text-muted-foreground mt-0.5 text-xs">no sistema</p>
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-card">
+        <Card className="bg-card border-0">
           <CardHeader className="flex flex-col items-center justify-center">
-            <CardTitle className="text-xs font-medium text-muted-foreground mb-1">
+            <CardTitle className="text-muted-foreground mb-1 text-xs font-medium">
               Estoque Baixo
             </CardTitle>
             <div className="flex flex-col items-center">
-              <div className="bg-yellow-600/20 rounded-full p-3 flex items-center justify-center">
+              <div className="flex items-center justify-center rounded-full bg-yellow-600/20 p-3">
                 <AlertTriangle
                   className={`h-9 w-9 ${
                     lowStockItems.length > 0
@@ -216,16 +241,16 @@ export default function DashboardPage() {
                   }`}
                 />
               </div>
-              <Badge className="mt-2 text-[10px] px-1.5 py-0.5 bg-yellow-500/20 text-muted-foreground">
+              <Badge className="text-muted-foreground mt-2 bg-yellow-500/20 px-1.5 py-0.5 text-[10px]">
                 Baixo
               </Badge>
             </div>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            <div className="text-3xl font-extrabold text-foreground mb-0.5">
+            <div className="text-foreground mb-0.5 text-3xl font-extrabold">
               {lowStockItems.length}
             </div>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <p className="text-muted-foreground mt-0.5 text-xs">
               {lowStockItems.length > 0
                 ? "Itens precisam de reposição"
                 : "Tudo em ordem"}
@@ -234,15 +259,14 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Graficos */}
       <div className="grid gap-4 lg:grid-cols-5">
-        <Card className="border-0 bg-card lg:col-span-3">
+        <Card className="bg-card border-0 lg:col-span-3">
           <CardHeader>
-            <CardTitle className="text-base text-foreground">
+            <CardTitle className="text-foreground text-base">
               Retiradas - Últimos 7 Dias
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex justify-center items-center">
+          <CardContent className="flex items-center justify-center">
             <ResponsiveContainer width="90%" height={300}>
               <BarChart
                 data={last7DaysData}
@@ -287,22 +311,23 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-card lg:col-span-2">
+        <Card className="bg-card border-0 lg:col-span-2">
           <CardHeader>
-            <CardTitle className="text-base text-foreground">
+            <CardTitle className="text-foreground text-base">
               Itens Mais Retirados
             </CardTitle>
           </CardHeader>
           <CardContent>
             {topItemsData.length === 0 ? (
-              <p className="flex h-70 items-center justify-center text-sm text-muted-foreground">
-                Nenhuma retirada registrada.
-              </p>
+              <EmptyState message="Nenhuma retirada registrada." />
             ) : (
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie
-                    data={topItemsData}
+                    data={topItemsData.map((item, i) => ({
+                      ...item,
+                      fill: getColor(i),
+                    }))}
                     cx="50%"
                     cy="50%"
                     innerRadius={50}
@@ -314,14 +339,7 @@ export default function DashboardPage() {
                     }
                     labelLine={false}
                     style={{ pointerEvents: "none" }}
-                  >
-                    {topItemsData.map((_, i) => (
-                      <Cell
-                        key={i}
-                        fill={CHART_COLORS[i % CHART_COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
+                  />
                   <Tooltip
                     contentStyle={{
                       borderRadius: "8px",
@@ -356,33 +374,29 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Bottom section */}
       <div className="grid gap-4 lg:grid-cols-2">
-        {/* Atividade Recente */}
-        <Card className="border-0 bg-card">
+        <Card className="bg-card border-0">
           <CardHeader>
-            <CardTitle className="text-base text-foreground">
+            <CardTitle className="text-foreground text-base">
               Atividade Recente
             </CardTitle>
           </CardHeader>
           <CardContent>
             {recentWithdrawals.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
-                Nenhuma retirada registrada.
-              </p>
+              <EmptyState message="Nenhuma retirada registrada." />
             ) : isMobile ? (
               <div className="flex flex-col gap-3">
                 {recentWithdrawals.map((w) => (
                   <div
                     key={w._id}
-                    className="rounded-xl border bg-card p-4 shadow-md flex flex-col gap-2"
+                    className="bg-card flex flex-col gap-2 rounded-xl border p-4 shadow-md"
                     style={{ background: "var(--card)" }}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold text-primary">
+                    <div className="flex items-center justify-between">
+                      <span className="text-primary font-semibold">
                         {w.technicianName}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         {new Date(w.date).toLocaleDateString("pt-BR", {
                           day: "2-digit",
                           month: "2-digit",
@@ -393,11 +407,11 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs">Item:</span>
-                      <Badge className="font-mono text-xs bg-blue-500/10 text-blue-500">
+                      <Badge className="bg-blue-500/10 font-mono text-xs text-blue-500">
                         {w.withdrawnItem}
                       </Badge>
                       <span className="text-xs">Quantidade:</span>
-                      <Badge className="font-mono text-xs bg-green-500/10 text-green-500">
+                      <Badge className="bg-green-500/10 font-mono text-xs text-green-500">
                         {w.quantityTaken}
                       </Badge>
                     </div>
@@ -407,7 +421,7 @@ export default function DashboardPage() {
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="hover:bg-transparent h-14">
+                  <TableRow className="h-14 hover:bg-transparent">
                     <TableHead className="text-muted-foreground">
                       Ação
                     </TableHead>
@@ -424,7 +438,7 @@ export default function DashboardPage() {
                   {recentWithdrawals.map((w) => (
                     <React.Fragment key={w._id}>
                       <TableRow className="h-14">
-                        <TableCell className="font-medium text-foreground">
+                        <TableCell className="text-foreground font-medium">
                           {w.technicianName}
                         </TableCell>
                         <TableCell>
@@ -450,17 +464,16 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Estoque Crítico */}
-        <Card className="border-0 bg-card">
+        <Card className="bg-card border-0">
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-foreground">
+            <CardTitle className="text-foreground flex items-center gap-2 text-base">
               <AlertTriangle className="h-4 w-4 text-amber-400" />
               Estoque Crítico
             </CardTitle>
           </CardHeader>
           <CardContent>
             {lowStockItems.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4 text-center">
+              <p className="text-muted-foreground py-4 text-center text-sm">
                 Todos os itens com estoque adequado.
               </p>
             ) : (
@@ -468,7 +481,7 @@ export default function DashboardPage() {
                 {lowStockItems.map((item) => (
                   <div key={item._id} className="space-y-1.5">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-medium text-foreground">
+                      <span className="text-foreground font-medium">
                         {item.itemName}
                       </span>
                       <span

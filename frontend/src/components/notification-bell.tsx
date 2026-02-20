@@ -21,6 +21,8 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/empty-state";
+import { messages } from "@/lib/messages";
 import api from "@/lib/api";
 
 interface Notification {
@@ -100,7 +102,6 @@ export function NotificationBell() {
         };
   });
 
-  // Atualiza preferências se mudar no localStorage (ex: outro tab)
   useEffect(() => {
     function handleStorage(e: StorageEvent) {
       if (e.key === "notifications") {
@@ -123,7 +124,6 @@ export function NotificationBell() {
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await api.get("/notifications");
-      // Filtro conforme preferências
       const prefs =
         typeof window !== "undefined"
           ? JSON.parse(localStorage.getItem("notifications") || "{}")
@@ -140,21 +140,19 @@ export function NotificationBell() {
         retirada: prefs.retiradas !== false,
         troca_maquina: prefs.trocas !== false,
         nova_maquina: prefs.novasMaquinas !== false,
-        novo_usuario: true, // sempre mostra
+        novo_usuario: true,
       };
       const filtered = (res.data.notifications || []).filter(
         (n: Notification) =>
           filterMap[n.type as keyof typeof filterMap] !== false,
       );
       setNotifications(filtered);
-      // Contar não lidas filtradas
       setUnreadCount(filtered.filter((n: Notification) => !n.read).length);
     } catch {
       // silently fail
     }
   }, [notificationPrefs]);
 
-  // Poll every 30 seconds
   useEffect(() => {
     const id = setTimeout(fetchNotifications, 0);
     const interval = setInterval(fetchNotifications, 30000);
@@ -164,7 +162,6 @@ export function NotificationBell() {
     };
   }, [fetchNotifications]);
 
-  // Refetch when popover opens
   useEffect(() => {
     if (open) {
       const id = setTimeout(fetchNotifications, 0);
@@ -212,11 +209,11 @@ export function NotificationBell() {
         <Button
           variant="ghost"
           size="icon"
-          className="relative h-10 w-10 text-foreground hover:text-foreground hover:bg-border"
+          className="text-foreground hover:text-foreground hover:bg-border relative h-10 w-10"
         >
           <Bell className="size-6" />
           {unreadCount > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-foreground">
+            <span className="text-foreground absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold">
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
@@ -224,16 +221,15 @@ export function NotificationBell() {
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="w-110 rounded-xl border border-border bg-card p-0 text-foreground shadow-xl"
+        className="border-border bg-card text-foreground w-110 rounded-xl border p-0 shadow-xl"
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-foreground">
+            <h3 className="text-foreground text-sm font-semibold">
               Notificações
             </h3>
             {unreadCount > 0 && (
-              <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary">
+              <span className="bg-primary/20 text-primary rounded-full px-2 py-0.5 text-[10px] font-semibold">
                 {unreadCount} nova{unreadCount > 1 ? "s" : ""}
               </span>
             )}
@@ -244,7 +240,7 @@ export function NotificationBell() {
                 variant="ghost"
                 size="sm"
                 onClick={markAllAsRead}
-                className="h-auto gap-1 px-2 py-1 text-xs text-slate-400 hover:text-primary hover:bg-transparent"
+                className="hover:text-primary h-auto gap-1 px-2 py-1 text-xs text-slate-400 hover:bg-transparent"
               >
                 <CheckCheck className="h-3.5 w-3.5" />
                 Marcar todas lidas
@@ -255,7 +251,7 @@ export function NotificationBell() {
                 variant="ghost"
                 size="sm"
                 onClick={deleteAllNotifications}
-                className="h-auto gap-1 px-2 py-1 text-xs text-red-400 hover:text-red-500 hover:bg-transparent"
+                className="h-auto gap-1 px-2 py-1 text-xs text-red-400 hover:bg-transparent hover:text-red-500"
                 title="Limpar todas as notificações"
               >
                 <X className="h-3.5 w-3.5" />
@@ -267,13 +263,9 @@ export function NotificationBell() {
 
         <Separator className="bg-border" />
 
-        {/* Notification List */}
         <div className="flex flex-col">
           {notifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-10 text-slate-500">
-              <Bell className="h-8 w-8 mb-2 opacity-30" />
-              <p className="text-sm">Nenhuma notificação</p>
-            </div>
+            <EmptyState message={messages.noNotification} />
           ) : (
             notifications.map((notif) => {
               const config = typeConfig[notif.type] || {
@@ -286,26 +278,24 @@ export function NotificationBell() {
                 <div
                   key={notif._id}
                   className={cn(
-                    "group flex gap-3 px-4 py-3 items-center transition-colors hover:bg-border border-b border-border last:border-0",
+                    "group hover:bg-border border-border flex items-center gap-3 border-b px-4 py-3 transition-colors last:border-0",
                     !notif.read && "bg-primary/4",
                   )}
                 >
-                  {/* Icon */}
                   <div
                     className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg mt-0.5",
+                      "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
                       config.bg,
                     )}
                   >
                     <Icon className={cn("h-4 w-4", config.color)} />
                   </div>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p
                         className={cn(
-                          "text-sm font-medium leading-tight",
+                          "text-sm leading-tight font-medium",
                           notif.read ? "text-slate-800black" : "text-slate-200",
                         )}
                       >
@@ -315,19 +305,18 @@ export function NotificationBell() {
                         {timeAgo(notif.createdAt)}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-xs text-slate-500 leading-relaxed line-clamp-2">
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-slate-500">
                       {notif.message}
                     </p>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex shrink-0 flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex shrink-0 flex-col items-center justify-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                     {!notif.read && (
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => markAsRead(notif._id)}
-                        className="h-6 w-6 text-slate-500 hover:bg-border hover:text-primary"
+                        className="hover:bg-border hover:text-primary h-6 w-6 text-slate-500"
                         title="Marcar como lida"
                       >
                         <Check className="h-3.5 w-3.5" />
@@ -335,14 +324,13 @@ export function NotificationBell() {
                     )}
                     <DeleteIconButton
                       onClick={() => deleteNotification(notif._id, !notif.read)}
-                      className="h-6 w-6 flex items-center justify-center hover:bg-red-500/10"
+                      className="flex h-6 w-6 items-center justify-center hover:bg-red-500/10"
                     />
                   </div>
 
-                  {/* Unread dot */}
                   {!notif.read && (
                     <div className="flex shrink-0 items-center">
-                      <div className="h-2 w-2 rounded-full bg-primary" />
+                      <div className="bg-primary h-2 w-2 rounded-full" />
                     </div>
                   )}
                 </div>

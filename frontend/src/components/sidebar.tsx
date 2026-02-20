@@ -60,7 +60,7 @@ function NavSection({ label, items, pathname, collapsed }: NavSectionProps) {
   return (
     <div>
       {label && !collapsed && (
-        <p className="mb-2 px-3 text-[10px] font-bold uppercase -tracking-tight text-slate-500">
+        <p className="mb-2 px-3 text-[10px] font-bold -tracking-tight text-slate-500 uppercase">
           {label}
         </p>
       )}
@@ -76,7 +76,7 @@ function NavSection({ label, items, pathname, collapsed }: NavSectionProps) {
                 collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5",
                 isActive
                   ? "bg-primary text-foreground"
-                  : "text-muted-foreground hover:bg-slate-200 hover:text-primary dark:hover:bg-border dark:hover:text-foreground",
+                  : "text-muted-foreground hover:text-primary dark:hover:bg-border dark:hover:text-foreground hover:bg-slate-200",
               )}
             >
               <item.icon className="h-4 w-4 shrink-0" />
@@ -109,22 +109,20 @@ export function Sidebar() {
     user?.credential === "admin" || user?.credential === "admin-root";
   const { collapsed, toggleCollapsed } = useSidebar();
 
-  // Menus para usuário comum (apenas itens permitidos)
-  const userManagementNav = [managementNav[1]]; // Só Retiradas
-  const userEquipmentNav = [equipmentNav[0], equipmentNav[1]]; // Máquinas, Trocas
-  const userDocumentsNav = [...documentsNav]; // Assinar
+  const userManagementNav = [managementNav[1]];
+  const userEquipmentNav = [equipmentNav[0], equipmentNav[1]];
+  const userDocumentsNav = [...documentsNav];
 
   return (
     <aside
       className={cn(
-        "hidden shrink-0 bg-secondary lg:flex lg:flex-col transition-all duration-300",
+        "bg-secondary hidden shrink-0 transition-all duration-300 lg:flex lg:flex-col",
         collapsed ? "w-17" : "w-64",
       )}
     >
-      {/* Logo + Toggle */}
       <div
         className={cn(
-          "flex h-16 items-center border-b border-border",
+          "border-border flex h-16 items-center border-b",
           collapsed ? "justify-center px-2" : "justify-between px-6",
         )}
       >
@@ -159,7 +157,7 @@ export function Sidebar() {
                 variant="ghost"
                 size="icon"
                 onClick={toggleCollapsed}
-                className="h-8 w-8 text-slate-400 hover:text-foreground hover:bg-white/6"
+                className="hover:text-foreground h-8 w-8 text-slate-400 hover:bg-white/6"
               >
                 <PanelLeftClose className="h-4 w-4" />
               </Button>
@@ -171,7 +169,6 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* Navigation */}
       <nav
         className={cn(
           "flex flex-1 flex-col gap-4 overflow-y-auto",
@@ -213,8 +210,7 @@ export function Sidebar() {
         )}
       </nav>
 
-      {/* Bottom buttons */}
-      <div className="border-t border-border flex flex-col gap-0.5 p-4">
+      <div className="border-border flex flex-col gap-0.5 border-t p-4">
         {collapsed ? (
           <>
             <Tooltip>
@@ -223,7 +219,7 @@ export function Sidebar() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-full h-10 text-muted-foreground hover:bg-border hover:text-foreground"
+                    className="text-muted-foreground hover:bg-border hover:text-foreground h-10 w-full"
                   >
                     <Settings className="h-4 w-4" />
                   </Button>
@@ -239,7 +235,7 @@ export function Sidebar() {
                   variant="ghost"
                   size="icon"
                   onClick={logout}
-                  className="w-full h-10 text-red-400 hover:bg-red-500/10 hover:text-red-400"
+                  className="h-10 w-full text-red-400 hover:bg-red-500/10 hover:text-red-400"
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
@@ -254,7 +250,7 @@ export function Sidebar() {
             <SettingsModal>
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-3 px-3 py-5 text-sm font-medium text-muted-foreground hover:bg-border hover:text-foreground"
+                className="text-muted-foreground hover:bg-border hover:text-foreground w-full justify-start gap-3 px-3 py-5 text-sm font-medium"
               >
                 <Settings className="h-4 w-4" />
                 Configurações
@@ -279,12 +275,12 @@ export function MobileSidebar() {
   const pathname = usePathname();
   const { logout, user } = useAuth();
   const isAdmin = user?.credential === "admin";
-  const userManagementNav = [managementNav[1]]; // Só Retiradas
-  const userEquipmentNav = [equipmentNav[0], equipmentNav[1]]; // Máquinas, Trocas
-  const userDocumentsNav = [...documentsNav]; // Assinar
+  const userManagementNav = [managementNav[1]];
+  const userEquipmentNav = [equipmentNav[0], equipmentNav[1]];
+  const userDocumentsNav = [...documentsNav];
 
   return (
-    <nav className="flex flex-col gap-4 bg-sidebar p-4 h-full">
+    <nav className="bg-sidebar flex h-full flex-col gap-4 p-4">
       <div className="pb-2">
         <Link href="/dashboard">
           <Image
@@ -331,7 +327,7 @@ export function MobileSidebar() {
         <SettingsModal>
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-border hover:text-foreground"
+            className="text-muted-foreground hover:bg-border hover:text-foreground w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium"
           >
             <Settings className="h-4 w-4" />
             Configurações

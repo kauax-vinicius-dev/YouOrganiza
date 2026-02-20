@@ -19,23 +19,23 @@ export function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="gap-2 py-6 px-2 hover:bg-border focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="hover:bg-border gap-2 px-2 py-6 focus-visible:ring-0 focus-visible:ring-offset-0"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-foreground">
+          <div className="bg-primary text-foreground flex h-8 w-8 items-center justify-center rounded-full">
             <User className="h-4 w-4" />
           </div>
-          <span className="hidden text-sm font-medium text-foreground sm:inline-block">
+          <span className="text-foreground hidden text-sm font-medium sm:inline-block">
             {user?.name}
           </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-48 min-h-30 flex flex-col items-center justify-center"
+        className="flex min-h-30 w-48 flex-col items-center justify-center"
       >
         <DropdownMenuLabel className="font-normal">
-          <p className="text-sm font-medium text-center">{user?.name}</p>
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-center text-sm font-medium">{user?.name}</p>
+          <p className="text-muted-foreground text-center text-xs">
             {user?.position}
           </p>
         </DropdownMenuLabel>
@@ -44,7 +44,7 @@ export function UserMenu() {
           onClick={logout}
           variant="ghost"
           size="icon"
-          className="w-full h-10 text-red-400 hover:bg-red-500/10 hover:text-red-400 flex items-center justify-center gap-2"
+          className="flex h-10 w-full items-center justify-center gap-2 text-red-400 hover:bg-red-500/10 hover:text-red-400"
         >
           <LogOut className="h-4 w-4" />
           Sair

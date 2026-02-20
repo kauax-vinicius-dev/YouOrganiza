@@ -17,7 +17,7 @@ export function DeleteIconButton({
       size="icon"
       onClick={onClick}
       className={cn(
-        "text-red-500 hover:bg-red-500/10 hover:text-red-500 shrink-0",
+        "shrink-0 text-red-500 hover:bg-red-500/10 hover:text-red-500",
         className,
       )}
     >

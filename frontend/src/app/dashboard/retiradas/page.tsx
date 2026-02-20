@@ -12,6 +12,7 @@ import { TechnicianField } from "@/components/technician-field";
 import { CardWithSearch } from "@/components/card-with-search";
 import { WithdrawalTable } from "@/components/withdrawal-table";
 import type { HardwareItem, Withdrawal } from "@/lib/types";
+import { messages } from "@/lib/messages";
 
 export default function RetiradasPage() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ export default function RetiradasPage() {
       setItems(itemsRes.data);
       setWithdrawals(withdrawalsRes.data);
     } catch {
-      toast.error("Erro ao carregar dados.");
+      toast.error(messages.fetchError);
     } finally {
       setLoadingData(false);
     }
@@ -49,7 +50,7 @@ export default function RetiradasPage() {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!selectedItem) {
-      toast.error("Selecione um item.");
+      toast.error(messages.selectItemError);
       return;
     }
     setLoading(true);
@@ -60,14 +61,14 @@ export default function RetiradasPage() {
         quantityTaken: Number(quantity),
         withdrawnItem: selectedItemData?.itemName || "",
       });
-      toast.success("Retirada registrada com sucesso!");
+      toast.success(messages.createWithdrawalSuccess);
       setTechnicianName("");
       setQuantity("");
       setSelectedItem("");
       fetchData();
     } catch (error: unknown) {
       const err = error as { response?: { data?: { msg?: string } } };
-      toast.error(err.response?.data?.msg || "Erro ao registrar retirada.");
+      toast.error(err.response?.data?.msg || messages.createWithdrawalError);
     } finally {
       setLoading(false);
     }
@@ -116,7 +117,7 @@ export default function RetiradasPage() {
         <TabsContent value="registrar">
           {loadingData ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
             </div>
           ) : (
             <StockFormCard
@@ -144,7 +145,7 @@ export default function RetiradasPage() {
               onSubmit={handleSubmit}
             >
               {selectedItemData && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Disponível em estoque: {selectedItemData.amountItem}
                 </p>
               )}

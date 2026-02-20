@@ -30,6 +30,8 @@ import { SearchInput } from "@/components/search-input";
 import { FormDialogFooter } from "@/components/form-dialog-footer";
 import type { SystemUser } from "@/lib/types";
 import { AccessDenied } from "@/components/access-denied";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { messages } from "@/lib/messages";
 
 export default function GerenciarUsuarioPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -62,7 +64,7 @@ export default function GerenciarUsuarioPage() {
       const res = await api.get("/users");
       setUsers(res.data);
     } catch {
-      toast.error("Erro ao carregar usuários.");
+      toast.error(messages.fetchUsersError);
     } finally {
       setLoading(false);
     }
@@ -73,6 +75,10 @@ export default function GerenciarUsuarioPage() {
       fetchUsers();
     }
   }, [user]);
+
+  if (loading) {
+    return <LoadingSpinner size="lg" className="h-64 items-center" />;
+  }
 
   if (user?.credential !== "admin" && user?.credential !== "admin-root") {
     return (
@@ -96,17 +102,17 @@ export default function GerenciarUsuarioPage() {
     e.preventDefault();
 
     if (!form.name || !form.email || !form.password || !form.position) {
-      toast.error("Preencha todos os campos obrigatórios.");
+      toast.error(messages.requiredFields);
       return;
     }
 
     if (form.password !== form.confirmPassword) {
-      toast.error("As senhas não coincidem.");
+      toast.error(messages.passwordMismatch);
       return;
     }
 
     if (form.password.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres.");
+      toast.error(messages.passwordShort);
       return;
     }
 
@@ -119,12 +125,12 @@ export default function GerenciarUsuarioPage() {
         position: form.position,
         credential: form.credential,
       });
-      toast.success("Usuário criado com sucesso!");
+      toast.success(messages.createUserSuccess);
       resetForm();
       setDialogOpen(false);
       fetchUsers();
     } catch (error: unknown) {
-      let msg = "Erro ao criar usuário. Tente novamente.";
+      let msg = messages.createUserError;
       if (
         typeof error === "object" &&
         error !== null &&
@@ -180,7 +186,7 @@ export default function GerenciarUsuarioPage() {
         }
         loading={loading}
         isEmpty={filtered.length === 0}
-        emptyMessage="Nenhum usuário encontrado."
+        emptyMessage={messages.noUser}
         actions={
           <RegisterDialogButton
             open={dialogOpen}
@@ -266,7 +272,7 @@ export default function GerenciarUsuarioPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-slate-200"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -299,15 +305,15 @@ export default function GerenciarUsuarioPage() {
             {filtered.map((u) => (
               <div
                 key={u._id}
-                className="rounded-lg border bg-card p-4 shadow-sm flex flex-col gap-2"
+                className="bg-card flex flex-col gap-2 rounded-lg border p-4 shadow-sm"
               >
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-primary">{u.name}</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-primary font-semibold">{u.name}</span>
                   <Badge
                     className={
                       u.credential === "admin"
                         ? "bg-primary/20 text-primary hover:bg-primary/30 font-mono text-xs"
-                        : "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 font-mono text-xs"
+                        : "bg-emerald-500/20 font-mono text-xs text-emerald-400 hover:bg-emerald-500/30"
                     }
                   >
                     {u.credential === "admin" ? "Administrador" : "Usuário"}
@@ -376,7 +382,7 @@ export default function GerenciarUsuarioPage() {
                         className={
                           u.credential === "admin"
                             ? "bg-primary/20 text-primary hover:bg-primary/30 font-mono text-xs"
-                            : "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 font-mono text-xs"
+                            : "bg-emerald-500/20 font-mono text-xs text-emerald-400 hover:bg-emerald-500/30"
                         }
                       >
                         {u.credential === "admin" ? "Administrador" : "Usuário"}
