@@ -65,7 +65,6 @@ YouOrganiza/
    npm run dev
    ```
 
-Acesse o sistema em [http://localhost:3000](http://localhost:3000) 🌐
 
 ## Segurança 🔐
 - Todas as rotas sensíveis são protegidas por autenticação JWT.
