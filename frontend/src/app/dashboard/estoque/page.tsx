@@ -47,7 +47,7 @@ export default function EstoquePage() {
 
   const fetchItems = async () => {
     try {
-      const res = await api.get("/hardware-items");
+      const res = await api.get("/admin/hardware-items");
       setItems(
         Array.isArray(res.data) ? res.data : res.data.hardwareItems || [],
       );
@@ -66,7 +66,7 @@ export default function EstoquePage() {
     e.preventDefault();
     setCreating(true);
     try {
-      await api.post("/hardware-items", {
+      await api.post("/admin/hardware-items", {
         itemName,
         amountItem: Number(amountItem),
       });
@@ -103,7 +103,7 @@ export default function EstoquePage() {
 
   const handleDelete = async (id: string) => {
     try {
-      await api.delete(`/hardware-items/${id}`);
+      await api.delete(`/admin/hardware-items/${id}`);
       toast.success(messages.deleteItemSuccess);
       fetchItems();
     } catch {
@@ -222,15 +222,15 @@ export default function EstoquePage() {
                   EditIconButtonProps={
                     isAdmin
                       ? {
-                          onClick: () => {
-                            setEditForm({
-                              _id: item._id,
-                              itemName: item.itemName || "",
-                              amountItem: item.amountItem?.toString() || "",
-                            });
-                            setEditDialogOpen(true);
-                          },
-                        }
+                        onClick: () => {
+                          setEditForm({
+                            _id: item._id,
+                            itemName: item.itemName || "",
+                            amountItem: item.amountItem?.toString() || "",
+                          });
+                          setEditDialogOpen(true);
+                        },
+                      }
                       : undefined
                   }
                 >

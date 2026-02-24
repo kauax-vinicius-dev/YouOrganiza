@@ -25,14 +25,14 @@ export class machineExchangeAdminController {
             });
         } catch (error) {
             return res.status(error.status || 500).json({
-                msg: error.msg || 'Erro no servidor'
+                msg: error.msg || 'Erro no servidorrrr'
             });
         }
     }
     static async getAllMachineExchanges(req, res) {
         try {
             const machineExchanges = await machineExchangeService.getAllMachineExchanges();
-            res.status(200).json({ machineExchanges });
+            res.status(200).json(machineExchanges);
         } catch (error) {
             return res.status(error.status || 500).json({
                 msg: error.msg || 'Erro no servidor'

@@ -118,7 +118,7 @@ export default function GerenciarUsuarioPage() {
 
     setCreating(true);
     try {
-      await api.post("/auth/register", {
+      await api.post("/admin/users", {
         name: form.name,
         email: form.email,
         password: form.password,

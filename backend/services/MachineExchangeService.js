@@ -14,8 +14,6 @@ export class machineExchangeService {
     }) {
         InputValidator.checkIfFieldIsEmpty(replacedMachineSerialNumber, 'replacedMachineSerialNumber');
         InputValidator.checkIfFieldIsEmpty(replacedMachinecurrentOperation, 'replacedMachinecurrentOperation');
-        InputValidator.checkIfFieldIsEmpty(newMachineSerialNumber, 'newMachineSerialNumber');
-        InputValidator.checkIfFieldIsEmpty(OperationCurrentNewMachine, 'OperationCurrentNewMachine');
         InputValidator.checkIfFieldIsEmpty(technicianName, 'technicianName');
         InputValidator.hasNoNumbers(technicianName, 'technicianName');
         const replacedMachine = await machine.findOne({ serialNumber: replacedMachineSerialNumber });
@@ -24,17 +22,7 @@ export class machineExchangeService {
         InputValidator.throwIfFalse(newMachine, 'numero de serie da nova maquina esta incorreto');
         const idReplacedMachine = replacedMachine.id;
         const idNewMachine = newMachine.id;
-        await machineService.editMachine({
-            id: idReplacedMachine,
-            fieldToUpdate: 'currentOperation',
-            newValue: replacedMachinecurrentOperation
-        });
-        await machineService.editMachine({
-            id: idNewMachine,
-            fieldToUpdate: 'currentOperation',
-            newValue: OperationCurrentNewMachine
-        });
-        const NewMachineExchange = new  machineExchange({
+        const NewMachineExchange = new machineExchange({
             replacedMachineSerialNumber,
             replacedMachinecurrentOperation,
             newMachineSerialNumber,
@@ -43,6 +31,7 @@ export class machineExchangeService {
             technicianName,
         })
         const saveMachineExchange = await NewMachineExchange.save();
+        InputValidator.throwIfFalse(saveMachineExchange, 'erro ao salvar troca de maquina');
     }
     static async getAllMachineExchanges() {
         const machineExchanges = await machineExchange.find();

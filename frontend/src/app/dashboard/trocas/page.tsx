@@ -47,7 +47,7 @@ export default function TrocasPage() {
     replacedMachineSerialNumber: "",
     replacedMachinecurrentOperation: "",
     newMachineSerialNumber: "",
-    newMachinecurrentOperation: "",
+    OperationCurrentNewMachine: "",
     observation: "",
     technicianName: "",
   });
@@ -71,7 +71,7 @@ export default function TrocasPage() {
     e.preventDefault();
     setCreating(true);
     try {
-      await api.post("/machine-exchanges", {
+      await api.post("/admin/machine-exchanges", {
         ...form,
         technicianName: isAdmin ? form.technicianName : user?.name || "",
       });
@@ -80,7 +80,7 @@ export default function TrocasPage() {
         replacedMachineSerialNumber: "",
         replacedMachinecurrentOperation: "",
         newMachineSerialNumber: "",
-        newMachinecurrentOperation: "",
+        OperationCurrentNewMachine: "",
         observation: "",
         technicianName: "",
       });
@@ -220,11 +220,11 @@ export default function TrocasPage() {
                     <Input
                       id="newOp"
                       placeholder="Descrição da operação"
-                      value={form.newMachinecurrentOperation}
+                      value={form.OperationCurrentNewMachine}
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          newMachinecurrentOperation: e.target.value,
+                          OperationCurrentNewMachine: e.target.value,
                         })
                       }
                     />
@@ -277,7 +277,7 @@ export default function TrocasPage() {
                   Operação:{" "}
                   <b>
                     {ex.replacedMachinecurrentOperation ||
-                      ex.newMachinecurrentOperation ||
+                      ex.OperationCurrentNewMachine ||
                       "—"}
                   </b>
                 </div>
@@ -363,7 +363,7 @@ export default function TrocasPage() {
                     </TableCell>
                     <TableCell className="text-sm">
                       {ex.replacedMachinecurrentOperation ||
-                        ex.newMachinecurrentOperation ||
+                        ex.OperationCurrentNewMachine ||
                         "—"}
                     </TableCell>
                     <TableCell className="text-muted-foreground max-w-50 truncate">

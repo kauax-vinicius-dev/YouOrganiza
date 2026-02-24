@@ -67,7 +67,7 @@ export default function MaquinasPage() {
     e.preventDefault();
     setCreating(true);
     try {
-      await api.post("/machines", form);
+      await api.post("/admin/machines", form);
       toast.success(messages.createMachineSuccess);
       setForm({
         serialNumber: "",
@@ -224,17 +224,17 @@ export default function MaquinasPage() {
               EditIconButtonProps={
                 isAdmin
                   ? {
-                      onClick: () => {
-                        setEditForm({
-                          _id: m._id,
-                          serialNumber: m.serialNumber || "",
-                          model: m.model || "",
-                          currentOperation: m.currentOperation || "",
-                          observation: m.observation || "",
-                        });
-                        setEditDialogOpen(true);
-                      },
-                    }
+                    onClick: () => {
+                      setEditForm({
+                        _id: m._id,
+                        serialNumber: m.serialNumber || "",
+                        model: m.model || "",
+                        currentOperation: m.currentOperation || "",
+                        observation: m.observation || "",
+                      });
+                      setEditDialogOpen(true);
+                    },
+                  }
                   : undefined
               }
             >

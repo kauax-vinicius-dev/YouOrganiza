@@ -3,17 +3,12 @@ import { InputValidator } from "../validators/Validator.js";
 
 export class HardwareItemsService {
     static async createHardwareItems({ itemName, amountItem }) {
-        InputValidator.checkIfFieldIsEmpty(itemName, 'itemName');
-        InputValidator.checkIfFieldIsEmpty(amountItem, 'amountItem');
-        InputValidator.hasLetters(amountItem, 'amountItem');
-        const existingItem = await hardwareItems.findOne({ itemName });
-        InputValidator.throwIfFalse(existingItem, 'já existe item com esse nome');
         const newHardwareItems = new hardwareItems({ itemName, amountItem });
         const saveHardwareItems = await newHardwareItems.save();
         InputValidator.throwIfFalse(saveHardwareItems, 'erro ao criar item');
     }
     static async deleteHardwareItems({ id }) {
-        InputValidator.checkIfFieldIsEmpty(id, 'id');
+
         const deletedItem = await hardwareItems.findByIdAndDelete(id);
         InputValidator.throwIfFalse(deletedItem, 'erro ao deletar arquivo');
     }
