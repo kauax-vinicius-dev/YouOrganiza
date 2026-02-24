@@ -25,7 +25,7 @@ export interface MachineExchange {
   replacedMachineSerialNumber: string;
   replacedMachinecurrentOperation: string;
   newMachineSerialNumber: string;
-  newMachinecurrentOperation: string;
+  OperationCurrentNewMachine: string;
   observation: string;
   technicianName: string;
   date: string;
